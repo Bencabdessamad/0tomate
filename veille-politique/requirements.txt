@@ -1,0 +1,11 @@
+requests>=2.31
+beautifulsoup4>=4.12
+lxml>=5.0
+feedparser>=6.0
+PyYAML>=6.0
+python-dateutil>=2.8
+openpyxl>=3.1
+tzdata>=2024.1        # base des fuseaux (indispensable sous Windows)
+anthropic>=0.40       # traduction + tonalité (optionnel si pas de clé)
+deep-translator>=1.11 # repli de traduction sans clé
+pytest>=8.0

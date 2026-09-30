@@ -1,0 +1,151 @@
+# ---------------------------------------------------------------------------
+# Mots-clés de la veille : un bloc = un acteur (personne ou parti).
+# Le texte est normalisé avant la recherche (voir core/normalize.py) :
+#   arabe   : tashkeel/tatweel retirés, أ/إ/آ→ا, ى→ي, ة→ه
+#   français: insensible à la casse et aux accents
+# Les variantes s'écrivent donc naturellement, sans se soucier des accents.
+#
+# Champs :
+#   id              identifiant court = nom de la colonne 0/1 dans l'Excel
+#   libelle         nom lisible
+#   type            personne | parti
+#   parti           parti de rattachement (sert à la couleur)
+#   couleur         couleur de fond (hex) utilisée dans l'Excel
+#   actif           false = ignoré (placeholder)
+#   termes          variantes "sûres" : un seul suffit pour retenir l'article
+#   termes_faibles  variantes ambiguës (ex. بركة = "bénédiction") : comptées
+#                   seulement si un terme sûr OU un mot de `contexte` est présent
+#   contexte        mots qui confirment un terme faible
+#   sensible_casse  sigles comparés en respectant la casse (évite "pam", "Rni"…)
+# Préfixes arabes gérés automatiquement : و ف ب ل ك ال (والبام, للأحرار…).
+# Les termes sont cherchés en mots entiers : "PAM" ne matche pas "PAMPERS".
+# ---------------------------------------------------------------------------
+acteurs:
+  - id: Mansouri
+    libelle: Fatima Zahra Mansouri
+    type: personne
+    parti: PAM
+    couleur: "E4D2F0"
+    termes:
+      - المنصوري
+      - فاطمة الزهراء المنصوري
+      - Fatima Zahra Mansouri
+      - Fatima-Zahra Mansouri
+      - El Mansouri
+      - Mansouri
+      - Mansoury
+
+  - id: PAM
+    libelle: Parti Authenticité et Modernité
+    type: parti
+    parti: PAM
+    couleur: "D9C3E8"
+    termes:
+      - الأصالة والمعاصرة
+      - البام
+      - Authenticité et Modernité
+      - PAM
+    sensible_casse: [PAM]
+
+  - id: RNI
+    libelle: Rassemblement national des indépendants
+    type: parti
+    parti: RNI
+    couleur: "BDD7EE"
+    termes:
+      - التجمع الوطني للأحرار
+      - Rassemblement national des indépendants
+      - RNI
+      - Chouki
+      - شوكي
+    termes_faibles:
+      - الأحرار          # "les libres" : ambigu hors contexte partisan
+    contexte: [حزب, التجمع, أخنوش, الحمامة, شوكي, الحكومة]
+    sensible_casse: [RNI]
+
+  - id: PI
+    libelle: Parti de l'Istiqlal
+    type: parti
+    parti: PI
+    couleur: "F4CCCC"
+    termes:
+      - حزب الاستقلال
+      - Istiqlal
+      - نزار بركة
+      - Nizar Baraka
+    termes_faibles:
+      - الاستقلال        # "l'indépendance" (عيد الاستقلال…) : ambigu
+      - بركة              # "bénédiction"
+      - Baraka            # "avoir la baraka"
+    contexte: [حزب, الاستقلاليين, الاستقلاليون, الميزان, نزار, Nizar, Istiqlal, اللجنة التنفيذية]
+
+  - id: Benkirane
+    libelle: Abdelilah Benkirane
+    type: personne
+    parti: PJD
+    couleur: "FFF2CC"
+    termes:
+      - بنكيران
+      - ابن كيران
+      - بن كيران
+      - Benkirane
+      - Benkiran
+      - Ben Kirane
+
+  - id: PJD
+    libelle: Parti de la justice et du développement
+    type: parti
+    parti: PJD
+    couleur: "FFE699"
+    termes:
+      - العدالة والتنمية
+      - PJD
+      - Parti de la justice et du développement
+    termes_faibles:
+      - المصباح           # "la lampe" (symbole du parti)
+    contexte: [حزب, بنكيران, الأمانة العامة]
+    sensible_casse: [PJD]
+
+  - id: Benabdellah
+    libelle: Nabil Benabdallah
+    type: personne
+    parti: PPS
+    couleur: "E2EFDA"
+    termes:
+      - بنعبد الله
+      - نبيل بنعبد الله
+      - نبيل بن عبد الله
+      - Benabdallah
+      - Benabdellah
+      - Nabil Ben Abdallah
+    termes_faibles:
+      - بن عبد الله       # très fréquent dans les noms propres
+      - Ben Abdallah
+    contexte: [نبيل, Nabil, التقدم والاشتراكية, PPS]
+
+  - id: PPS
+    libelle: Parti du progrès et du socialisme
+    type: parti
+    parti: PPS
+    couleur: "C6E0B4"
+    termes:
+      - التقدم والاشتراكية
+      - PPS
+      - Parti du progrès et du socialisme
+    sensible_casse: [PPS]
+
+  # --- À CONFIRMER ---------------------------------------------------------
+  # « il ica me » dans la demande : USFP / الاتحاد الاشتراكي ? Ilyas El Omari ?
+  # Placeholder désactivé : passer `actif: true` et compléter une fois confirmé.
+  - id: A_CONFIRMER
+    libelle: "À CONFIRMER (« il ica me » : USFP ? Ilyas El Omari ?)"
+    type: parti
+    parti: A_CONFIRMER
+    couleur: "D9D9D9"
+    actif: false
+    termes:
+      - الاتحاد الاشتراكي
+      - USFP
+      - إلياس العماري
+      - Ilyas El Omari
+    sensible_casse: [USFP]

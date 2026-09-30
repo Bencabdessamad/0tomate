@@ -1,0 +1,110 @@
+# ---------------------------------------------------------------------------
+# Sources de la veille. Ajouter un site = ajouter un bloc sous `sites:`.
+#
+#   nom               nom affiché dans l'Excel
+#   url               racine du site
+#   langue            ar | fr (langue par défaut ; chaque article est aussi
+#                     détecté automatiquement)
+#   actif             false = ignoré
+#   a_confirmer       true = source signalée "à confirmer" dans l'Excel
+#   methode_preferee  rest | rss | html : essayée en premier, puis les autres
+#                     dans l'ordre rest -> rss -> html
+#   rss               URL(s) de flux (défaut : <url>/feed/ puis <url>/rss)
+#   rubriques         pages de rubrique politique (repli HTML)
+#   rest_categories   (option) IDs de catégories WordPress pour filtrer l'API
+#   selecteurs        sélecteurs CSS de secours pour le scraping HTML :
+#       liens         liens vers les articles sur la page de rubrique
+#       titre         titre dans la page article
+#       date          élément portant la date (attribut datetime/content ou texte)
+#       contenu       conteneur du corps de l'article
+#   (sans sélecteurs, des heuristiques génériques sont utilisées :
+#    OpenGraph, JSON-LD, <time>, .entry-content, <article>…)
+#
+# NB : les rubriques et sélecteurs ci-dessous sont des valeurs de départ à
+# vérifier dans un navigateur ; le REST/RSS suffit normalement pour les sites
+# WordPress.
+# ---------------------------------------------------------------------------
+defaults:
+  user_agent: "VeillePolitiqueMA/1.0 (veille presse, lecture publique; +https://github.com/bencabdessamad/0tomate)"
+  delai: [1.0, 2.0]          # secondes entre deux requêtes sur un même site
+  timeout: 20
+  retries: 3                 # avec backoff exponentiel (429/5xx)
+  respect_robots: true
+  ordre_methodes: [rest, rss, html]
+  rest_par_page: 50
+  rest_max_pages: 5
+  html_max_articles: 40      # par rubrique
+  html_stop_apres_anciens: 5 # arrêt après N articles hors fenêtre d'affilée
+  sites_en_parallele: 4      # sites différents collectés en parallèle
+  base: veille.db            # SQLite (historique + caches)
+  dossier_sortie: sorties
+
+sites:
+  hespress_ar:
+    nom: Hespress (arabe)
+    url: https://www.hespress.com
+    langue: ar
+    methode_preferee: rest
+    rss: [https://www.hespress.com/feed]
+    rubriques: [https://www.hespress.com/politique]
+    selecteurs:
+      liens: ".card-title a, h3 a, .stretched-link"
+      titre: "h1.post-title, h1"
+      date: ".date-post, time"
+      contenu: ".article-content, .post-content"
+
+  hespress_fr:
+    nom: Hespress FR
+    url: https://fr.hespress.com
+    langue: fr
+    methode_preferee: rest
+    rss: [https://fr.hespress.com/feed]
+    rubriques: [https://fr.hespress.com/politique]
+    selecteurs:
+      liens: ".card-title a, h3 a, .stretched-link"
+      titre: "h1.post-title, h1"
+      date: ".date-post, time"
+      contenu: ".article-content, .post-content"
+
+  al3omk:
+    nom: Al3omk
+    url: https://al3omk.com
+    langue: ar
+    methode_preferee: rest
+    rubriques: [https://al3omk.com/category/politique]
+
+  lakome2:
+    nom: Lakome2
+    url: https://lakome2.com
+    langue: ar
+    methode_preferee: rest
+    rubriques: [https://lakome2.com/category/politique]
+
+  hibapress:
+    nom: Hibapress
+    url: https://hibapress.com
+    langue: ar
+    methode_preferee: rest
+    rubriques: [https://hibapress.com/category/politique]
+
+  thevoice:
+    nom: The Voice
+    url: https://thevoice.ma          # À CONFIRMER
+    langue: fr
+    a_confirmer: true
+    methode_preferee: rest
+    note: "URL à confirmer (thevoice.ma ?)"
+
+  alaoual:
+    nom: Alaoual
+    url: https://alaoual.com
+    langue: ar
+    methode_preferee: rest
+    rubriques: [https://alaoual.com/category/politique]
+
+  madar21:
+    nom: Madar21
+    url: https://madar21.com
+    langue: ar
+    methode_preferee: rest
+    rubriques: [https://madar21.com/category/politique]
